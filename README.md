@@ -21,7 +21,7 @@ bitshares/drupal7-plugin
   under the Ubercart - payment section.<br />
 3. Under Store > Configuration > Payment Methods, enable the Bitshares payment
   method.<br />
-4. Fill out config.php with appropriate information and configure Bitshares Checkout
+4. Fill out config.php with appropriate information and configure Bitshares Checkout<br />
     - See the readme at https://github.com/sidhujag/bitsharescheckout
 
 
