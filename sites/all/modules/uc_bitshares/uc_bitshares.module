@@ -76,13 +76,7 @@ function uc_bitshares_settings_form()
         '#default_value' => variable_get('uc_bitshares_debug_mode', 0),
         '#description'   => t('This allows restricting bitshares payments to only store administrators, primarily for testing and/or debugging purposes.'),
     );
-    $form['general'] = array(
-        '#type'        => 'fieldset',
-        '#title'       => t('General settings'),
-        '#collapsible' => FALSE,
-        '#collapsed'   => FALSE,
-    );   
-   
+
     return $form;
 }
 
@@ -236,49 +230,3 @@ function uc_bitshares_settings_validate($form, &$form_state)
 } // end function - uc_bitshares_settings_validate
 
 
-
-/**
- * Sends out an email alert from the Bitshares module
- * Implements hook_mail()
- *
- * @param $key
- * @param $message
- * @param $params
- */
-function uc_bitshares_mail($key, &$message, $params)
-{
-    // The key allows for a module to define multiple mails.
-    switch($key)
-    {
-
-    case 'complete':
-        $message['subject'] = t("Invoice Complete");
-        $message['body'][] = "Bitshares " .
-            t("has just updated an invoice status as: 'complete'. This indicates that the sale has been fully confirmed on the network and your Bitshares merchant account has been credited.");
-        //$message['body'][] = wordwrap($email_text, 65, "\r\n");
-        $message['body'][] = "\r\n\r\n" .
-            t("Invoice") . " URL: " . $params['url'] . "\r\n" .
-            t("Order")   . " ID: " . $params['order_id'] . "\r\n";
-        break;
-    case 'cancel':
-        $message['subject'] = t("Cancel Invoice");
-        $message['body'][] = "Bitshares " .
-            t("has just updated an invoice status as: '") . $params['status'] .
-            t("'. Your payments department should be informed of this status update; You're Bitshares wallet may need to be checked to confirm that the account is credited after the payment eventually confirms on the network.");
-        //$message['body'][] = wordwrap($email_text, 65, "\r\n");
-        $message['body'][] = "\r\n\r\n" .
-            t("Invoice") . " URL: " . $params['url'] . "\r\n" .
-            t("Order")   . " ID: " . $params['order_id'] . "\r\n";
-        break;
-    case 'default':
-        $message['subject'] = t("Unusual Invoice Status");
-        $message['body'][] = "Bitshares " .
-            t("has just sent an invoice status notification with an unusal status of: '") .
-            $params['status'] . t("' to your website. Your website developer should be informed of this status update to ascertain what further action, if any, needs to be taken.");
-        //$message['body'][] = wordwrap($email_text, 65, "\r\n");
-        $message['body'][] = "\r\n\r\n" .
-            t("Invoice") . " URL: " . $notify['url'] . "\r\n" .
-            t("Order")   . " ID: " . $order_id . "\r\n";
-        break;
-    }
-}

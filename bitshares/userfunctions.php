@@ -1,12 +1,11 @@
 <?php
 
-$path = getcwd();
 chdir(ROOT.'..');
 define('DRUPAL_ROOT', getcwd());
 require_once './includes/bootstrap.inc';
 drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-chdir($path);
-require 'config.php';
+
+require ROOT.'config.php';
 
 function getOrderCartHelper($id)
 {
@@ -113,7 +112,6 @@ function getOrderWithStatusFromCartHelper($id, $response_code)
 function sendToCart($order_id, $statusCode, $total)
 {
 	global $baseURL;
-  global $notifyEmail;
   $response = array();
   $order = uc_order_load($order_id);
 
@@ -123,34 +121,21 @@ function sendToCart($order_id, $statusCode, $total)
     {
         uc_order_update_status($order_id, 'completed');
         // mark the payment
-        uc_payment_enter($order_id, $order->payment_method, $order->order_total, $order->uid, NULL, '', REQUEST_TIME);
-
+        
+        uc_payment_enter($order_id, $order->payment_method,$order->order_total, $order->uid, NULL, '', REQUEST_TIME); 
         // note the payment confirmation
-        uc_order_comment_save($order_id, 0, t("Customer's bitshares payment has confirmed."), 'admin');
+        uc_order_comment_save($order_id, 0, t("Customer's bitshares payment has confirmed."), 'admin', 'completed');
 
 
-        // construct an alert to email
-        $params             = array();
-        $params['url']      = $baseURL.'user/'.$order->uid.'/orders';
-        $params['order_id'] = $order_id;
-        // send the email
-        $to      = $notifyEmail;
-        $success = drupal_mail('uc_bitshares', 'complete', $to, $language, $params, "Bitshares");
-        $response['url'] =  $params['url'];
+
+        $response['url'] =  $baseURL.'user/'.$order->uid.'/orders';
          uc_cart_empty($order->uid);
 	  }
     else if($statusCode === 'C')
     {
         uc_order_update_status($order_id, 'canceled');
-        uc_order_comment_save($order_id, 0, t("Customer cancelled this order from the checkout form."), 'admin');
-        // construct an alert to email
-        $params             = array();
-        $params['url']      = $baseURL;
-        $params['order_id'] = $order_id;
-        $params['status']   = 'Cancelled';
-        // send the email
-        $to      = $notifyEmail;
-        $cancel = drupal_mail('uc_bitshares', 'cancel', $to, $language, $params, "Bitshares");
+        uc_order_comment_save($order_id, 0, t("Customer cancelled this order from the checkout form."), 'admin', 'canceled');
+        $response['url'] = $baseURL . 'cart/checkout';
     }
   }
   else
@@ -226,17 +211,14 @@ function doesOrderExistUser($memo, $order_id)
 function completeOrderUser($order)
 {
 	global $baseURL;
-  $response = sendToCart($order['order_id'], 'P', $order['total']);  
+    $response = sendToCart($order['order_id'], 'P', $order['total']);  
 	return $response;
 }
 function cancelOrderUser($order)
 {
 	global $baseURL;
-  $response = sendToCart($order['order_id'], 'C', $order['total']);  
-	if(!array_key_exists('error', $response))
-	{	
-		$response['url'] = $baseURL;
-	}   
+    $response = sendToCart($order['order_id'], 'C', $order['total']);  
+  
   
 	return $response;
 }

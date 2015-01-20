@@ -8,5 +8,4 @@ $rpcPort = 1234;
 $demoMode = TRUE;
 $hashSalt = 'drupal7demo'; // see README
 $cronToken = 'asddvsdddf43'; // see README
-$notifyEmail = 'sidhujag@hotmail.com';
 ?>
