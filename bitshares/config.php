@@ -1,11 +1,11 @@
 <?php
 define('ROOT', __DIR__ .DIRECTORY_SEPARATOR);
-$baseURL = 'http://www.bitsharesdemo.com/drupal7/';
-$accountName = 'opencartdemo';
-$rpcUser = 'user';
-$rpcPass = 'pass';
-$rpcPort = 1234;
-$demoMode = TRUE;
-$hashSalt = 'drupal7demo'; // see README
-$cronToken = 'asddvsdddf43'; // see README
+define('baseURL', 'http://www.bitsharesdemo.com/drupal7/');
+define('accountName', 'opencartdemo');
+define('rpcUser', 'user');
+define('rpcPass', 'pass');
+define('rpcPort', '1234');
+define('demoMode ', TRUE);
+define('hashSalt', 'drupal7demo');
+define('cronToken', 'asddvsdddf43');
 ?>
